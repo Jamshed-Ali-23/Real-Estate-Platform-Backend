@@ -90,10 +90,13 @@ userSchema.pre('save', async function(next) {
 
 // Sign JWT and return
 userSchema.methods.getSignedJwtToken = function() {
+  // Default to 7 days if JWT_EXPIRE is not set or invalid
+  const expiresIn = process.env.JWT_EXPIRE || '7d';
+  
   return jwt.sign(
     { id: this._id, role: this.role },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE }
+    { expiresIn }
   );
 };
 
